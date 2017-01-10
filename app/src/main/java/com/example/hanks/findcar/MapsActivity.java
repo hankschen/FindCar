@@ -24,7 +24,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap gMap;
     LocationManager locationManager;
-    Double lat, lng;
+    double lat, lng;
     MyLocationListener locationListener;
     Location currentLocation;
 
@@ -57,18 +57,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-//        locationListener = new MyLocationListener();
-//        try {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
-//        }catch (SecurityException e){
-//
-//        }
+        locationListener = new MyLocationListener();
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
+        }catch (SecurityException e){
+
+        }
         //LatLng myLocation = new LatLng(-34, 151);
         //LatLng foungyungStation = new LatLng(24.254235, 120.722931);
-        LatLng myLocation = new LatLng(24.254235, 120.722931);
+        //LatLng myLocation = new LatLng(24.254235, 120.722931);
+        LatLng myLocation = new LatLng(lat, lng);
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
+        Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
+        //gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
         //gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
     }
 
@@ -94,10 +97,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         public void onLocationChanged(Location location) {
-            currentLocation = location;
-            lat = currentLocation.getLatitude();
-            lng = currentLocation.getLongitude();
-            Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
+            if (location != null) {
+                currentLocation = location;
+                lat = currentLocation.getLatitude();
+                lng = currentLocation.getLongitude();
+                Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(MapsActivity.this,"No Location Data..!",Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
@@ -116,17 +123,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        locationListener = new MyLocationListener();
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
-        }catch (SecurityException e){
-
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        locationListener = new MyLocationListener();
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
+//        }catch (SecurityException e){
+//
+//        }
+//    }
 
     // 離開app時，停止位置變化的監聽，這樣才不會浪費資源
     @Override

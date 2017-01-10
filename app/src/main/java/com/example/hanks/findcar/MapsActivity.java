@@ -22,15 +22,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap gMap;
     LocationManager locationManager;
     Double lat, lng;
     MyLocationListener locationListener;
+    Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_map);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         getGPS();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -55,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        gMap = googleMap;
         locationListener = new MyLocationListener();
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
@@ -65,10 +66,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         //LatLng sydney = new LatLng(-34, 151);
         //LatLng foungyungStation = new LatLng(24.254235, 120.722931);
-        LatLng myLocation = new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
-        mMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
+        LatLng myLocation = new LatLng(24.254, 120.722);
+        gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
+        gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
     }
 
     void getGPS() {
@@ -93,8 +94,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         public void onLocationChanged(Location location) {
-            lat = location.getLatitude();
-            lng = location.getLongitude();
+            currentLocation = location;
+            lat = currentLocation.getLatitude();
+            lng = currentLocation.getLongitude();
             Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
         }
 

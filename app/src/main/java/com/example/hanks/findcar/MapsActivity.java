@@ -57,19 +57,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        locationListener = new MyLocationListener();
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
-        }catch (SecurityException e){
-
-        }
-        //LatLng sydney = new LatLng(-34, 151);
+//        locationListener = new MyLocationListener();
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
+//        }catch (SecurityException e){
+//
+//        }
+        //LatLng myLocation = new LatLng(-34, 151);
         //LatLng foungyungStation = new LatLng(24.254235, 120.722931);
-        LatLng myLocation = new LatLng(24.254, 120.722);
+        LatLng myLocation = new LatLng(24.254235, 120.722931);
         gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
-        gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
+        //gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
     }
 
     void getGPS() {
@@ -116,17 +116,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        locationListener = new MyLocationListener();
-//        try {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
-//        }catch (SecurityException e){
-//
-//        }
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        locationListener = new MyLocationListener();
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
+        }catch (SecurityException e){
+
+        }
+    }
 
     // 離開app時，停止位置變化的監聽，這樣才不會浪費資源
     @Override

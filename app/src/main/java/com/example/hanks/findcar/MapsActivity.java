@@ -3,13 +3,16 @@ package com.example.hanks.findcar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
@@ -24,16 +27,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap gMap;
     LocationManager locationManager;
-    double lat, lng;
-    MyLocationListener locationListener;
-    Location currentLocation;
+    //MyLocationListener locationListener;
+    String provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        getGPS();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -57,23 +57,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        locationListener = new MyLocationListener();
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        getGPS();
+        getLocation();
+
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
         }catch (SecurityException e){
 
         }
+//        //註冊位置更新監聽物件
+//        locationListener = new MyLocationListener();
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
+//        }catch (SecurityException e){
+//
+//        }
         //LatLng myLocation = new LatLng(-34, 151);
         //LatLng foungyungStation = new LatLng(24.254235, 120.722931);
         //LatLng myLocation = new LatLng(24.254235, 120.722931);
-        LatLng myLocation = new LatLng(lat, lng);
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-        gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
-        Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
+        //LatLng myLocation = new LatLng(locationListener.lat, locationListener.lng);
+//        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+//        gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
+//        Toast.makeText(MapsActivity.this, "經度座標為 " + locationListener.lat + "\n" + "緯度座標為 " + locationListener.lng + "\n", Toast.LENGTH_LONG).show();
         //gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
         //gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
+//        String uri = String.format("geo=%f,%f?z=18",locationListener.lat,locationListener.lng);
+//        Intent goToMyLocation = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+//        startActivity(goToMyLocation);
     }
+
+//    public void onMyLocation(View view){
+//        LatLng myLocation = new LatLng(locationListener.lat, locationListener.lng);
+//        gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+//        gMap.addMarker(new MarkerOptions().position(myLocation).title("My Location...."));
+//        Toast.makeText(MapsActivity.this, "經度座標為 " + locationListener.lat + "\n" + "緯度座標為 " + locationListener.lng + "\n", Toast.LENGTH_LONG).show();
+        //gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation)); //移到指定位置
+        //gMap.moveCamera(CameraUpdateFactory.zoomIn()); // 放大地圖
+//        String uri = String.format("geo=%f,%f?z=18",locationListener.lat,locationListener.lng);
+//        Intent goToMyLocation = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+//        startActivity(goToMyLocation);
+//    }
 
     void getGPS() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -93,17 +119,105 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    class MyLocationListener implements android.location.LocationListener {
+//    class MyLocationListener implements LocationListener {
+//        double lat, lng;
+//        @Override
+//        public void onLocationChanged(Location location) {
+//            if (location != null) {
+//                currentLocation = location;
+//                lat = currentLocation.getLatitude();
+//                lng = currentLocation.getLongitude();
+//                Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
+//            }else {
+//                Toast.makeText(MapsActivity.this,"No Location Data..!",Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
+//        @Override
+//        public void onStatusChanged(String s, int i, Bundle bundle) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderEnabled(String s) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderDisabled(String s) {
+//
+//        }
+//    }
+
+    // 開啟App即註冊位置更新監聽物件
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+////        locationListener = new MyLocationListener();
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
+//        }catch (SecurityException e){
+//
+//        }
+//    }
+
+    // 離開app時，停止位置變化的監聽，這樣才不會浪費資源
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        try {
+//            locationManager.removeUpdates((android.location.LocationListener) locationListener);
+//        }catch (SecurityException e){
+//
+//        }
+//    }
+
+    void getLocation() {
+        //取得設定準則(標準)的物件(用以設定定位精準度跟省電程度...等)
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        //建最佳位置提供者provider
+        //在室外GPS信號很好時,可用此方法
+        //provider = locationManager.getBestProvider(criteria, true);
+        provider = LocationManager.GPS_PROVIDER;
+        //在室內無GPS信號時,用此方法
+        //provider = LocationManager.NETWORK_PROVIDER;
+        //透過provider取得最後已知的位置
+        Location location = null;
+
+        //回家試沒加try catch會不會有問題
+        try {
+            location = locationManager.getLastKnownLocation(provider);
+        } catch (SecurityException e) {
+
+        }
+
+        if (gMap != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+            //要顯現走過的軌跡在此加入下面行,不要clear掉,就會邊走邊標位置
+            //如果加clear就可一直更新你的位置
+            //mMap.addMarker()
+        }
+    }
+
+    android.location.LocationListener locationListener = new android.location.LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            if (location != null) {
-                currentLocation = location;
-                lat = currentLocation.getLatitude();
-                lng = currentLocation.getLongitude();
-                Toast.makeText(MapsActivity.this, "經度座標為 " + lat + "\n" + "緯度座標為 " + lng + "\n", Toast.LENGTH_LONG).show();
-            }else {
-                Toast.makeText(MapsActivity.this,"No Location Data..!",Toast.LENGTH_SHORT).show();
+            if(gMap!=null){
+                LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,16.0f));
+                //跳Toast顯示位置的位置提供者,海拔,方位角,速度,緯經度..等資訊
+                //先建StringBuilder來串要顯示的資訊字串
+                StringBuilder sb=new StringBuilder();
+                sb.append("Provider:"+provider+"\n")
+                        .append("海抜:"+location.getAltitude()+"公尺\n")
+                        .append("方位:"+location.getBearing()+"\n")
+                        .append("速度"+location.getSpeed()+"公尺/秒\n")
+                        .append("緯度"+location.getLatitude()+"\n")
+                        .append("經度" + location.getLongitude()+"\n");
+                Toast.makeText(MapsActivity.this, sb, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -121,28 +235,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onProviderDisabled(String s) {
 
         }
-    }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        locationListener = new MyLocationListener();
-//        try {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, locationListener);
-//        }catch (SecurityException e){
-//
-//        }
-//    }
-
-    // 離開app時，停止位置變化的監聽，這樣才不會浪費資源
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            locationManager.removeUpdates(locationListener);
-        }catch (SecurityException e){
-
-        }
-    }
+    };
 }

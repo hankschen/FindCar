@@ -12,6 +12,11 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         tools:context="com.example.hanks.findcar.MapsActivity" />
 
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:onClick="onMyLocation"
+        android:text="my location"/>
 
 </FrameLayout>
